@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: expriration-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: expriration
+  template:
+    metadata:
+      labels:
+        app: expriration
+    spec:
+      containers:
+        - name: expriration
+          # image: us.gcr.io/apt-philosophy-329409/expriration
+          image: ticketing/expriration
+          imagePullPolicy: Never
+          env:
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NATS_URI
+              value: "http://nats-srv:4222"
+            - name: NATS_CLUSTER_ID
+              value: "ticketing"
+            - name: REDIS_HOST
+              value: expriration-redis-srv
